@@ -1,0 +1,10 @@
+@tailwind base; @tailwind components; @tailwind utilities;
+body { @apply bg-ink text-bone font-sans antialiased; }
+:focus-visible { outline: 2px solid #b8935a; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+.pole{height:6px;background:repeating-linear-gradient(135deg,#b3282d 0 10px,#f1ebe0 10px 20px,#2b4f8c 20px 30px)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,74,.55)}50%{box-shadow:0 0 0 8px rgba(201,162,74,0)}}
+@keyframes sweep{to{transform:translateX(100%)}}
+.attn{position:relative;overflow:hidden;animation:glow 2s infinite}
+.attn::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:sweep 2.8s infinite}
