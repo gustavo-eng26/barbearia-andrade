@@ -12,7 +12,7 @@ export default function About() {
           <p className="mt-6 text-sm text-ash">{business.address}, {business.city}<br />Instagram {business.instagram}</p></div>
       </div>
       <h2 className="mt-20 font-display text-3xl font-bold">O ambiente</h2>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">{gallery.map(([n, alt, r]) => <figure key={n} className={n === "corredor" ? "sm:col-span-3" : ""}><img loading="lazy" src={`/images/${n}.webp`} alt={alt} className={`w-full rounded-2xl border border-white/10 object-cover ${n === "corredor" ? "aspect-[16/8]" : "aspect-[3/4]"}`} /></figure>)}</div>
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">{gallery.map(([n, alt, r]) => <figure key={n} className={n === "corredor" ? "sm:col-span-3" : ""}><img loading="lazy" src={`${import.meta.env.BASE_URL}images/${n}.webp`} alt={alt} className={`w-full rounded-2xl border border-white/10 object-cover ${n === "corredor" ? "aspect-[16/8]" : "aspect-[3/4]"}`} /></figure>)}</div>
       <div className="pole mt-16 rounded-full" aria-hidden="true" />
       <Link to="/agendar" className="mt-10 inline-block rounded-full bg-brass px-8 py-4 text-sm font-semibold text-ink hover:bg-bone">AGENDAR HORÁRIO</Link>
     </article>

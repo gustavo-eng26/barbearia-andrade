@@ -12,7 +12,7 @@ export const business = {
   since: 2012,
   slogan: "Foco. Disciplina. Execução.",
   tagline: "Barba · Cabelo · Bigode",
-  logo: "/images/logo.webp" as string | null,
+  logo: `${import.meta.env.BASE_URL}images/logo.webp`,
   hours: [
     { label: "Segunda a sexta", value: "09:00 – 19:00", open: 9, close: 19, days: [1, 2, 3, 4, 5] },
     { label: "Sábado", value: "09:00 – 15:00", open: 9, close: 15, days: [6] },
