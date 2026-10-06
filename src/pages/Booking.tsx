@@ -17,13 +17,13 @@ interface BookingSelection {
   phone: string;
 }
 
-function nextDays() {
-  const out: Date[] = [];
-  for (let i = 0; out.length < 6 && i < 14; i++) {
-    const d = new Date(); d.setDate(d.getDate() + i);
-    if (d.getDay() !== 0) out.push(d);
-  }
-  return out;
+function daysInMonth(month: Date) {
+  const firstDay = new Date(month.getFullYear(), month.getMonth(), 1).getDay();
+  const count = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+  return [
+    ...Array.from({ length: firstDay }, () => null),
+    ...Array.from({ length: count }, (_, i) => new Date(month.getFullYear(), month.getMonth(), i + 1)),
+  ];
 }
 function slotsFor(date: string) {
   if (!date) return [];
@@ -31,7 +31,7 @@ function slotsFor(date: string) {
   if (!h || !h.open) return [];
   return Array.from({ length: h.close - h.open }, (_, i) => `${String(h.open + i).padStart(2, "0")}:00`);
 }
-const iso = (d: Date) => d.toISOString().slice(0, 10);
+const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 export default function Booking() {
   const [params] = useSearchParams();
@@ -50,7 +50,13 @@ export default function Booking() {
     phone: customer?.phone ?? "",
   }));
   const [done, setDone] = useState(false);
-  const days = useMemo(nextDays, []);
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+  const days = useMemo(() => daysInMonth(calendarMonth), [calendarMonth]);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const set = (key: keyof BookingSelection, value: string) => setSel(previous => ({ ...previous, [key]: value }));
   const valid = [sel.service, sel.barber, sel.date, sel.time, sel.name.trim() && sel.phone.trim()][step];
 
@@ -74,7 +80,24 @@ export default function Booking() {
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
         {step === 0 && services.map(service => <button key={service.id} onClick={() => set("service", service.id)} className={opt(sel.service === service.id)}><b>{service.name}</b><span className="block text-xs text-ash">{service.duration} · {service.price}</span></button>)}
         {step === 1 && barbers.map(barber => <button key={barber.id} onClick={() => set("barber", barber.id)} className={opt(sel.barber === barber.id)}><b>{barber.name}</b><span className="block text-xs text-ash">{barber.role}</span></button>)}
-        {step === 2 && days.map(day => <button key={iso(day)} onClick={() => setSel(previous => ({ ...previous, date: iso(day), time: "" }))} className={opt(sel.date === iso(day))}><span className="text-xs text-ash">{WEEK[day.getDay()]}</span><b className="block">{day.toLocaleDateString("pt-BR", { day: "2-digit", month: "long" })}</b></button>)}
+        {step === 2 && <div className="sm:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
+            <button type="button" aria-label="Mês anterior" disabled={calendarMonth.getFullYear() === today.getFullYear() && calendarMonth.getMonth() === today.getMonth()} onClick={() => setCalendarMonth(month => new Date(month.getFullYear(), month.getMonth() - 1, 1))} className="rounded-lg border border-white/10 px-3 py-2 text-bone transition hover:border-brass disabled:invisible">‹</button>
+            <h2 className="font-display text-xl font-semibold capitalize">{calendarMonth.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}</h2>
+            <button type="button" aria-label="Próximo mês" onClick={() => setCalendarMonth(month => new Date(month.getFullYear(), month.getMonth() + 1, 1))} className="rounded-lg border border-white/10 px-3 py-2 text-bone transition hover:border-brass">›</button>
+          </div>
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2" role="grid" aria-label="Calendário de agendamento">
+            {WEEK.map(day => <div key={day} role="columnheader" className="pb-2 text-center text-[10px] font-semibold text-ash sm:text-xs">{day}</div>)}
+            {days.map((day, index) => {
+              if (!day) return <div key={`empty-${index}`} role="gridcell" aria-hidden="true" />;
+              const date = iso(day);
+              const isOpen = business.hours.some(hours => hours.open > 0 && hours.days.includes(day.getDay()));
+              const isDisabled = day < today || !isOpen;
+              return <button key={date} type="button" role="gridcell" aria-label={day.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })} aria-pressed={sel.date === date} disabled={isDisabled} onClick={() => setSel(previous => ({ ...previous, date, time: "" }))} className={`aspect-square rounded-xl border text-sm font-semibold transition sm:text-base ${sel.date === date ? "border-brass bg-brass text-ink" : "border-white/10 bg-coal text-bone hover:border-brass"} disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/10`}>{day.getDate()}</button>;
+            })}
+          </div>
+          <p className="mt-3 text-xs text-ash">Dias passados e dias em que a barbearia fecha não podem ser selecionados.</p>
+        </div>}
         {step === 3 && slotsFor(sel.date).map((time, i) => <button key={time} disabled={i % 4 === 1} onClick={() => set("time", time)} className={`${opt(sel.time === time)} disabled:line-through disabled:opacity-30`}>{time}</button>)}
         {step === 4 && <form className="space-y-4 sm:col-span-2" onSubmit={event => {
           event.preventDefault();
