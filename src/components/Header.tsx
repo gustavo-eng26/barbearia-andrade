@@ -67,7 +67,7 @@ export default function Header() {
       </div>
       {createPortal(<AnimatePresence>
         {open && <motion.div className="fixed inset-x-0 bottom-0 top-16 z-50 bg-black/60 md:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)}>
-          <motion.nav id="mobile-navigation" aria-label="Menu mobile" className="flex max-h-full flex-col gap-1 overflow-y-auto border-t border-white/10 bg-coal px-4 pb-8 pt-3 shadow-2xl" initial={{ y: -12 }} animate={{ y: 0 }} exit={{ y: -12 }} transition={{ duration: 0.18 }} onClick={event => event.stopPropagation()}>
+          <motion.nav id="mobile-navigation" aria-label="Menu mobile" className="flex h-full max-h-full flex-col gap-1 overflow-y-auto border-t border-white/10 bg-coal px-4 pb-8 pt-3 shadow-2xl" initial={{ y: -12 }} animate={{ y: 0 }} exit={{ y: -12 }} transition={{ duration: 0.18 }} onClick={event => event.stopPropagation()}>
             {links.map(([to, label]) => <NavLink key={to} to={to} end={to === "/"} onClick={() => setOpen(false)} className={(s) => `${cls(s)} flex min-h-12 items-center rounded-xl px-4 py-3 active:bg-white/10`}>{label}</NavLink>)}
             <NavLink to="/agendar" onClick={() => setOpen(false)} className="mt-2 flex min-h-12 items-center justify-center rounded-full bg-brass px-4 py-3 text-sm font-semibold text-ink transition hover:bg-bone active:scale-[.99]">Agendar horário</NavLink>
             {customer ? (
