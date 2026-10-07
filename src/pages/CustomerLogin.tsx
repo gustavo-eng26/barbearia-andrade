@@ -54,6 +54,10 @@ export default function CustomerLogin() {
   return (
     <main className="grid min-h-screen place-items-center px-5 py-10">
       <div className="w-full max-w-md">
+        <Link to="/" className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-xl pr-3 text-sm font-medium text-ash transition hover:bg-white/5 hover:text-brass focus-visible:text-brass">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><path d="m14 18-6-6 6-6M8 12h12" /></svg>
+          Voltar ao site
+        </Link>
         <Link to="/" className="mb-8 flex flex-col items-center text-center">
           {business.logo && <img src={business.logo} alt={business.name} className="h-20 w-20 rounded-full border border-brass/40 object-cover" />}
           <span className="mt-3 font-display text-2xl font-bold uppercase tracking-widest">{business.name}</span>

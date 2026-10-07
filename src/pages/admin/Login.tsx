@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { authMode, isLoggedIn, login } from "../../services/auth";
 import { ExclusiveBanner, Notice, input } from "../../components/admin/AdminUI";
 import { useCustomerAuth } from "../../services/customerAuth";
@@ -24,6 +24,10 @@ export default function Login() {
   return (
     <main className="grid min-h-screen place-items-center px-5">
       <form onSubmit={submit} noValidate className="w-full max-w-sm rounded-2xl border border-white/10 bg-coal p-8">
+        <Link to="/" className="mb-6 inline-flex min-h-11 items-center gap-2 rounded-xl pr-3 text-sm font-medium text-ash transition hover:bg-white/5 hover:text-brass focus-visible:text-brass">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><path d="m14 18-6-6 6-6M8 12h12" /></svg>
+          Voltar ao site
+        </Link>
         <ExclusiveBanner />
         <p className="text-xs tracking-[.3em] text-brass">PAINEL ADMINISTRATIVO</p>
         <h1 className="mt-2 mb-6 font-display text-3xl font-bold">Entrar</h1>
