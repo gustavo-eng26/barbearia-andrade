@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { business } from "../data/business";
@@ -64,8 +65,8 @@ export default function Header() {
           </span>
         </button>
       </div>
-      <AnimatePresence>
-        {open && <motion.div className="fixed inset-x-0 bottom-0 top-16 z-40 bg-black/60 md:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)}>
+      {createPortal(<AnimatePresence>
+        {open && <motion.div className="fixed inset-x-0 bottom-0 top-16 z-50 bg-black/60 md:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)}>
           <motion.nav id="mobile-navigation" aria-label="Menu mobile" className="flex max-h-full flex-col gap-1 overflow-y-auto border-t border-white/10 bg-coal px-4 pb-8 pt-3 shadow-2xl" initial={{ y: -12 }} animate={{ y: 0 }} exit={{ y: -12 }} transition={{ duration: 0.18 }} onClick={event => event.stopPropagation()}>
             {links.map(([to, label]) => <NavLink key={to} to={to} end={to === "/"} onClick={() => setOpen(false)} className={(s) => `${cls(s)} flex min-h-12 items-center rounded-xl px-4 py-3 active:bg-white/10`}>{label}</NavLink>)}
             <NavLink to="/agendar" onClick={() => setOpen(false)} className="mt-2 flex min-h-12 items-center justify-center rounded-full bg-brass px-4 py-3 text-sm font-semibold text-ink transition hover:bg-bone active:scale-[.99]">Agendar horário</NavLink>
@@ -80,7 +81,7 @@ export default function Header() {
             ) : <NavLink to="/entrar" onClick={() => setOpen(false)} className={(s) => `${cls(s)} mt-2 flex min-h-12 items-center gap-2 rounded-xl px-4 py-3 active:bg-white/10`}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-4 w-4" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="8" r="3.5" /><path d="M5 21v-1.5a7 7 0 0 1 14 0V21" /></svg>Entrar</NavLink>}
           </motion.nav>
         </motion.div>}
-      </AnimatePresence>
+      </AnimatePresence>, document.body)}
     </header>
   );
 }
